@@ -1,2 +1,2 @@
-# neural-network-
+# neural-network
 Neural Network Assignment

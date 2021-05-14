@@ -7,6 +7,7 @@ import keras.models as km
 import keras.layers as kl
 import tensorflow.keras.utils as ku
 import keras.backend as K
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 #https://stackoverflow.com/questions/49643907/clipping-input-data-to-the-valid-range-for-imshow-with-rgb-data-0-1-for-floa
 #https://machinelearningmastery.com/train-test-split-for-evaluating-machine-learning-algorithms/#:~:text=The%20train%2Dtest%20split%20is,dividing%20it%20into%20two%20subsets.
@@ -14,6 +15,7 @@ import keras.backend as K
 #https://stackoverflow.com/questions/41908379/keras-plot-training-validation-and-test-set-accuracy
 #https://www.tensorflow.org/tutorials/images/classification
 #https://www.tensorflow.org/tutorials/images/classification
+#https://www.pyimagesearch.com/2019/07/08/keras-imagedatagenerator-and-data-augmentation/
 
 
 data = np.load("50x50flowers.images.npy")
@@ -27,7 +29,7 @@ print (targets)
 #convert dataset to uint8 in order for it to be seen and used as an image 
 #you need to divide dataset by 255 to be able to normalize the data
 #otherwise the data sucks
-image_data = data/255 #.astype('uint8')
+image_data = data/255
 
 (X_train, X_test, y_train, y_test) = train_test_split(image_data, targets, test_size=0.2)
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
@@ -43,6 +45,17 @@ y_test = ku.to_categorical(y_test, 17)
 
 print (X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
+# initialize an our data augmenter as an "empty" image data generator
+aug = ImageDataGenerator()
+aug = ImageDataGenerator(
+		rotation_range=20,
+		zoom_range=0.15,
+		width_shift_range=0.2,
+		height_shift_range=0.2,
+		shear_range=0.15,
+		horizontal_flip=True,
+		fill_mode="nearest"
+)
 
 
 def make_model(numfm, numnodes, input_shape = (50, 50, 3), output_size = 17):
@@ -67,12 +80,15 @@ def make_model(numfm, numnodes, input_shape = (50, 50, 3), output_size = 17):
 nn = make_model(20, 100)
 nn.summary()
 
-#nn.compile(optimizer="sgd",loss ="categorical_crossentropy", metrics = ["accuracy"])
-
 nn.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy'])
-#nn.compile(optimizer='adam',loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy'])
 
-fit = nn.fit(X_train, y_train, epochs = 20, batch_size = 100, verbose = 1)
+
+#fit = nn.fit(X_train, y_train, epochs = 20, batch_size = 100, verbose = 1)
+fit = nn.fit(
+	x=aug.flow(X_train, y_train, batch_size = 100),
+	#validation_data = (X_test, y_test),
+	epochs = 20, verbose = 1
+)
 
 score = nn.evaluate(X_test, y_test)
 print ('score ', score)
@@ -85,6 +101,9 @@ plt.xlabel('epoch')
 plt.legend(['accuracy', 'loss'], loc='upper left')
 plt.savefig("plotsaved.png")
 plt.show()
+
+
+
 
 
 

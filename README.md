@@ -84,3 +84,25 @@ REFERENCES:
 - https://towardsdatascience.com/installing-tensorflow-gpu-in-ubuntu-20-04-4ee3ca4cb75d
 - https://support.system76.com/articles/cuda/
 - 
+
+
+- PYTroch 
+```
+nami@erza:~/ExtraDrive/scinet/neural network$ pyenv activate pytorch-nn 
+pyenv-virtualenv: prompt changing will be removed from future release. configure `export PYENV_VIRTUALENV_DISABLE_PROMPT=1' to simulate the behavior.
+(pytorch-nn) nami@erza:~/ExtraDrive/scinet/neural network$ python
+Python 3.9.4 (default, Apr  7 2021, 20:59:34) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import torch
+>>> print(torch.cuda.device_count())
+1
+>>> print(torch.cuda.current_device())
+0
+>>> print(torch.cuda.get_device_name(torch.cuda.current_device()))
+GeForce GTX 1050 Ti
+>>> print(torch.cuda.is_available())
+True
+>>> 
+
+```

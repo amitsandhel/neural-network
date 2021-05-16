@@ -15,8 +15,13 @@ ISSUE Detected:
 
 STEPS 
 - these are the following installation and setup systems we did.
-1. sudo apt install nvidia-cuda-toolkit
-2. {{{ sudo apt install nvidia-cuda-toolkit }}}
+
+1. install cudat toolkit 
+ ```
+- sudo apt install nvidia-cuda-toolkit
+```
+3. sudo apt install nvidia-cuda-toolkit
+4. {{{  }}}
 
 
 

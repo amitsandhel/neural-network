@@ -70,6 +70,11 @@ $ pyenv activate tensorflow-nn
 ```
 pip install tensorflow==2.3.0
 ```
+14. install alternative libraries
+```
+pip install matplotlib
+pip install scikit-learn
+```
 
 
 

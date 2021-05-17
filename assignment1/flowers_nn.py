@@ -65,9 +65,12 @@ def make_model(numfm, numnodes, input_shape = (50, 50, 3), output_size = 17):
 	model.add(kl.Conv2D(numfm, kernel_size = (3, 3), input_shape = input_shape, activation = 'relu'))
 	# Add a max pooling layer.
 	model.add(kl.MaxPooling2D(pool_size = (2, 2), strides = (1, 1)))
+	
+	# Add a 2D convolution layer, with numfm feature maps.
 	model.add(kl.Conv2D(numfm * 2, kernel_size = (3, 3), activation = 'relu'))
 	# Add a max pooling layer.
 	model.add(kl.MaxPooling2D(pool_size = (2, 2), strides = (1, 1)))
+	
 	# Convert the network from 2D to 1D.
 	model.add(kl.Flatten())
 	# Add a fully-connected layer.
@@ -86,8 +89,8 @@ nn.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy'
 #fit = nn.fit(X_train, y_train, epochs = 20, batch_size = 100, verbose = 1)
 fit = nn.fit(
 	x=aug.flow(X_train, y_train, batch_size = 100),
-	#validation_data = (X_test, y_test),
-	epochs = 50, verbose = 1
+	validation_data = (X_test, y_test),
+	epochs = 40, verbose = 1
 )
 
 score = nn.evaluate(X_test, y_test)

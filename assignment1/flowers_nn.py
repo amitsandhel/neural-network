@@ -87,7 +87,7 @@ nn.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy'
 fit = nn.fit(
 	x=aug.flow(X_train, y_train, batch_size = 100),
 	#validation_data = (X_test, y_test),
-	epochs = 20, verbose = 1
+	epochs = 50, verbose = 1
 )
 
 score = nn.evaluate(X_test, y_test)

@@ -20,11 +20,11 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 data = np.load("50x50flowers.images.npy")
 targets = np.load("50x50flowers.targets.npy").astype("uint8")
-print (data.shape)
-print (targets.shape)
-print (min(targets))
-print (max(targets))
-print (targets)
+#print (data.shape)
+#print (targets.shape)
+#print (min(targets))
+#print (max(targets))
+#print (targets)
 
 #convert dataset to uint8 in order for it to be seen and used as an image 
 #you need to divide dataset by 255 to be able to normalize the data
@@ -32,18 +32,18 @@ print (targets)
 image_data = data/255
 
 (X_train, X_test, y_train, y_test) = train_test_split(image_data, targets, test_size=0.2)
-print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
-print ('k image data format: ', K.image_data_format())
+#print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+#print ('k image data format: ', K.image_data_format())
 #you need to shift the entire dataset by 1 since to categorical requires a starting point of 0
 y_train = y_train - 1
 y_test = y_test - 1
-print ('categorical')
-print (max(y_train), max(y_test))
-print (min(y_train), min(y_test))
+#print ('categorical')
+#print (max(y_train), max(y_test))
+#print (min(y_train), min(y_test))
 y_train = ku.to_categorical(y_train, 17)
 y_test = ku.to_categorical(y_test, 17)
 
-print (X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+#print (X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
 # initialize an our data augmenter as an "empty" image data generator
 aug = ImageDataGenerator()
@@ -65,12 +65,16 @@ def make_model(numfm, numnodes, input_shape = (50, 50, 3), output_size = 17):
 	model.add(kl.Conv2D(numfm, kernel_size = (3, 3), input_shape = input_shape, activation = 'relu'))
 	# Add a max pooling layer.
 	model.add(kl.MaxPooling2D(pool_size = (2, 2), strides = (1, 1)))
+	#Add a dropout
+	#model.add(kl.Dropout(0.5))
 	
 	# Add a 2D convolution layer, with numfm feature maps.
 	model.add(kl.Conv2D(numfm * 2, kernel_size = (3, 3), activation = 'relu'))
 	# Add a max pooling layer.
 	model.add(kl.MaxPooling2D(pool_size = (2, 2), strides = (1, 1)))
-	
+	#Add a dropout
+	#model.add(kl.Dropout(0.5))
+
 	# Convert the network from 2D to 1D.
 	model.add(kl.Flatten())
 	# Add a fully-connected layer.
@@ -90,7 +94,7 @@ nn.compile(optimizer='adam', loss='categorical_crossentropy',metrics=['accuracy'
 fit = nn.fit(
 	x=aug.flow(X_train, y_train, batch_size = 100),
 	validation_data = (X_test, y_test),
-	epochs = 40, verbose = 1
+	epochs = 100, verbose = 1
 )
 
 score = nn.evaluate(X_test, y_test)
@@ -104,8 +108,6 @@ plt.xlabel('epoch')
 plt.legend(['accuracy', 'loss'], loc='upper left')
 plt.savefig("plotsaved.png")
 plt.show()
-
-
 
 
 

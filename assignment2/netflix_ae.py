@@ -30,6 +30,8 @@ from tensorflow.keras.models import Model
 #https://stackoverflow.com/questions/44666098/how-to-implement-sparse-mean-squared-error-loss-in-keras
 #https://github.com/keras-team/keras/issues/7065#issuecomment-318002081
 #https://towardsdatascience.com/creating-custom-loss-functions-using-tensorflow-2-96c123d5ce6c
+#https://stackoverflow.com/questions/34875944/how-to-write-a-custom-loss-function-in-tensorflow
+#https://cnvrg.io/keras-custom-loss-functions/
 
 df = pd.read_csv("test.csv", sep=',') #, dtype=None) #, skiprows=[0])
 #df.values
@@ -39,45 +41,37 @@ print (type(df))
 df = df.fillna(0)
 print ('updated df ')
 print (df.head())
-print (df.shape)
-print (type(df))
-#convert and remove all nan to zero
-#dataframe = np.nan_to_num(df)
-#print (dataframe)
+print ('raw shape: ', df.shape)
+#print (type(df))
 
 
 
-#split train and testing data set
+#split train and testing data set by 80% 20%
 (train_data, test_data) = train_test_split(df, test_size=0.2)
-print (train_data.shape)
-print (test_data.shape)
+print ('train data shape:', train_data.shape)
+print ('test data shape:', test_data.shape)
+#convert the train and test arrayts to float 32
 train_data = train_data.astype('float32').values
 test_data = test_data.astype('float32').values
-print (train_data.shape)
-print (test_data.shape)
-print ('value of 1')
-print (train_data[0].shape)
 
+#look at the array shape of the first element in the array
+print ('array shape of first element inside training array: ', train_data[0].shape)
+
+#noremalize everything between 0 - and cast to float32
 min_val = tf.reduce_min(train_data)
 max_val = tf.reduce_max(train_data)
-print (min_val, max_val)
-
+#print (min_val, max_val)
 train_data = (train_data - min_val) / (max_val - min_val)
 test_data = (test_data - min_val) / (max_val - min_val)
-
+#case the array again to float32 a
 train_data = tf.cast(train_data, tf.float32)
 test_data = tf.cast(test_data, tf.float32)
-print (train_data)
-#print (train_data.tail())
+
 
 # The size of the latent space.
 latent_dim = 4499
 
-mse = tf.keras.losses.MeanSquaredError()
-loss = tf.keras.losses.mean_squared_error(train_data, train_data)
-print (loss)
-
-#building the encoder
+#building the encoder and decoder model as a tensor flow class
 class AutoEncoder(Model):
 	def __init__(self, latent_dim):
 		super(AutoEncoder, self).__init__()
@@ -100,36 +94,36 @@ class AutoEncoder(Model):
 		decoded = self.decoder(encoded)
 		return decoded
 
-	def masked_mse(y_true,y_pred):
-		#difference between true label and predicted label
-		print ('xxx ', y_true, y_pred)
-
-		error = y_true-y_pred    
-		#square of the error
-		sqr_error = K.square(error)
-		#mean of the square of the error
-		mean_sqr_error = K.mean(sqr_error)
-		#square root of the mean of the square of the error
-		sqrt_mean_sqr_error = K.sqrt(mean_sqr_error)
-		print ('xxx' , sqrt_mean_sqr_error)
-		#return the error
-		return sqrt_mean_sqr_error
-
+## Masked Mean Squared Error
+def mmse(y_true, y_pred):
+	mask = y_true != 0
+	return K.mean(K.square(y_true[mask] - y_pred[mask]))
 
 
 autoencoder = AutoEncoder(latent_dim)
 #input_shape = (4499,1)
 #autoencoder.build(input_shape)
-autoencoder.compile(optimizer='adam', loss=masked_mse)
-#autoencoder.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+autoencoder.compile(optimizer='adam', loss=mmse, metrics = ['mean_squared_error'])
+            
+#using a mse for now
+#autoencoder.compile(optimizer='adam', loss='mse')
 #autoencoder.summary()
 
 fit = autoencoder.fit(train_data, train_data,
-          epochs=10, 
+          epochs=40, 
           batch_size=100,
           verbose=1)
-
 
 score = autoencoder.evaluate(test_data, test_data)
 print('score is', score)
 
+#plot the loss and accuracy for the chart save 
+plt.plot(fit.history['mean_squared_error'], 'red')
+plt.plot(fit.history['loss'])
+plt.plot(fit.history['accuracy'])
+plt.title('model accuracy')
+plt.ylabel('mean squared error')
+plt.xlabel('epoch')
+plt.legend(['mean squared error', 'loss', 'accuracy'], loc='upper left')
+plt.savefig("plotsaved.png")
+plt.show()

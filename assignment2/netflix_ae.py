@@ -32,6 +32,7 @@ from tensorflow.keras.models import Model
 #https://towardsdatascience.com/creating-custom-loss-functions-using-tensorflow-2-96c123d5ce6c
 #https://stackoverflow.com/questions/34875944/how-to-write-a-custom-loss-function-in-tensorflow
 #https://cnvrg.io/keras-custom-loss-functions/
+#https://towardsdatascience.com/https-medium-com-chayankathuria-regression-why-mean-square-error-a8cad2a1c96f
 
 df = pd.read_csv("test.csv", sep=',') #, dtype=None) #, skiprows=[0])
 #df.values
@@ -78,14 +79,18 @@ class AutoEncoder(Model):
 		self.latent_dim = latent_dim
 		
 		self.encoder = tf.keras.Sequential([
-			layers.Dense(3, activation="relu"),
-			layers.Dense(16, activation="relu"),
-			layers.Dense(8, activation="relu")
+			layers.Dense(8, activation="relu"),
+			layers.Dense(4, activation="relu"),
+			layers.Dense(8, activation="relu"),
+			layers.Dense(4, activation="relu"),
+			#layers.Dense(4499, activation="sigmoid"),
 		])
 
 		self.decoder = tf.keras.Sequential([
-			layers.Dense(16, activation="relu"),
-			layers.Dense(32, activation="relu"),
+			layers.Dense(4, activation="relu"),
+			layers.Dense(8, activation="relu"),
+			layers.Dense(4, activation="relu"),
+			layers.Dense(8, activation="relu"),
 			layers.Dense(4499, activation="sigmoid"),
 		])
 
@@ -108,10 +113,9 @@ autoencoder.compile(optimizer='adam', loss=mmse, metrics = ['mean_squared_error'
 #using a mse for now
 #autoencoder.compile(optimizer='adam', loss='mse')
 #autoencoder.summary()
-
 fit = autoencoder.fit(train_data, train_data,
           epochs=40, 
-          batch_size=100,
+          batch_size=50,
           verbose=1)
 
 score = autoencoder.evaluate(test_data, test_data)
@@ -120,10 +124,11 @@ print('score is', score)
 #plot the loss and accuracy for the chart save 
 plt.plot(fit.history['mean_squared_error'], 'red')
 plt.plot(fit.history['loss'])
-plt.plot(fit.history['accuracy'])
 plt.title('model accuracy')
 plt.ylabel('mean squared error')
 plt.xlabel('epoch')
-plt.legend(['mean squared error', 'loss', 'accuracy'], loc='upper left')
+plt.legend(['mean squared error', 'loss'], loc='upper left')
 plt.savefig("plotsaved.png")
 plt.show()
+
+#https://keras.io/api/models/model_training_apis/

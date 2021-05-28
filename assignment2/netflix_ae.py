@@ -1,3 +1,4 @@
+#Amit Sandhel
 #assignment 2 
 
 import matplotlib.pyplot as plt
@@ -18,21 +19,16 @@ from sklearn.model_selection import train_test_split
 
 #a variable to determine if we are going to use fit or train_on_batch
 #default is tob ie train_on_batch
+#the fit one is commented out
 TRAINING="tob"
+#TRAINING="fit" 
 
-
-
+#open raw text file
+#Note that the Header was manually removed from test.csv file
 raw_df = pd.read_csv("test.csv", sep=',') #, dtype=None)
-#df.values
-#print (type(df))
 
 #convert all nan values to 0
 raw_df = raw_df.fillna(0)
-print ('updated df ')
-print (raw_df.head())
-print ('raw shape: ', raw_df.shape)
-
-
 
 
 ## Masked Mean Squared Error 
@@ -50,7 +46,9 @@ class AutoEncoder(Model):
 
 		self.encoder = tf.keras.Sequential([
 			layers.Dense(8, activation="relu"),
+			layers.Dropout(0.3),
 			layers.Dense(16, activation="relu"),
+			layers.Dropout(0.3),
 			layers.Dense(32, activation="softmax"),
 			layers.Dropout(0.3),
 			layers.Dense(16, activation="relu"),
@@ -58,15 +56,18 @@ class AutoEncoder(Model):
 
 		self.decoder = tf.keras.Sequential([
 			layers.Dense(16, activation="relu"),
+			layers.Dropout(0.3),
 			layers.Dense(32, activation="relu"),
+			layers.Dropout(0.3),
 			layers.Dense(16, activation="relu"),
+			layers.Dropout(0.3),
 			layers.Dense(8, activation="softmax"),
+			layers.Dropout(0.3),
 			#if i dont have this then it crashes saying i have a size mismatch
 			layers.Dense(4499, activation="relu"),
 		])
 
 	def call(self, input_features):
-		print ('call feature ', input_features)
 		encoded = self.encoder(input_features)
 		decoded = self.decoder(encoded)
 		return decoded
@@ -79,50 +80,44 @@ def setup_data(data_frame, var_training):
 
 	#split train and testing data set by 80% 20%
 	(train_data, test_data) = train_test_split(raw_df, test_size=0.2)
-	print ('train data shape:', train_data.shape)
-	print ('test data shape:', test_data.shape)
 	#convert the train and test data into arrays
 	train_data = train_data.values 
 	test_data = test_data.values 
-	#look at the array shape of the first element in the array
-	print ('array shape of first element inside training array: ', train_data[0].shape)
-	#find the min and max values
+
+	#find the min and max values of the array
 	min_val = tf.reduce_min(train_data)
 	max_val = tf.reduce_max(train_data)
 
 	if var_training == "fit":
-		print ('fit')
+		print ('Running fit() ')
 		#noremalize everything between 0
-		
-		print ('min max value ', min_val, max_val)
 		train_data = (train_data - min_val) / (max_val - min_val)
 		test_data = (test_data - min_val) / (max_val - min_val)
-		print ('normalized  data ')
-		print (train_data)
 	else:
 		#we have a batch the training data needs to be a int for now and not normalized
 		#it will be normalized inside the epoch for loop 
 		# we convert and normlaize the test data however
-		print ('batch')
+		print ('Runnig batch() ')
 		#we need to convert the training and test data into int types to be able
-		#to use the random.choice functio n
+		#to use the random.choice function
 		train_data = train_data.astype(int)
-		#test_data  = test_data/5 
 		test_data = (test_data - min_val) / (max_val - min_val)
 
 	return (train_data, test_data, max_val, min_val)
 
-
+#run the setup_data() function and get the training, testing and max and min values of the data
 train_data, test_data, max_val, min_val = setup_data(raw_df, var_training=TRAINING)
 
 def fit_or_batch_trainer(train_data, test_data, var_training, max_max_val, min_val):
-	'''fucntion which can run the fit or train_on_batch model
+	'''function which can run the fit or train_on_batch model depending on user choice and display/calculate
+	the score of the trained model
 	'''
 	autoencoder = AutoEncoder()
-	autoencoder.compile(optimizer='RMSprop', loss=mmse, metrics = ['mean_squared_error'])
+	autoencoder.compile(optimizer='RMSprop', loss=mmse, metrics = [mmse])
+
 	if var_training == "fit":
 		#we are running the fit model
-		print ('fit')
+		print ('Runnign fit training model')
 		#this code works perfectly though can't tell how good the network actualy is
 		#run for all epochs
 		fit = autoencoder.fit(train_data, train_data,
@@ -133,22 +128,13 @@ def fit_or_batch_trainer(train_data, test_data, var_training, max_max_val, min_v
 		score = autoencoder.evaluate(test_data, test_data)
 		print('score is', score)
 	else:
-		print ('batch')
-		#train on batch attempt
-		#autoencoder = AutoEncoder()
-		#autoencoder.compile(optimizer='RMSprop', loss=mmse, metrics = ['mean_squared_error'])
-		#to use the train_on_batch
-		#onvert the train_data into an integer
-
-		#train_data = train_data.astype(int)
-		#test_data  = test_data/5 
+		print ('Running train_on_batch')
 		#loop through an epoch
-		for epoch in range(1, 250):
+		for epoch in range(1, 600):
 			#extract random data from the training data 
 			x = train_data[np.random.choice(train_data.shape[0], 100, replace=False)]
 			#normalize the random extracted data
 			x_data = (x - min_val) / (max_val - min_val)
-			#x_data = x/5
 			#run our autoencoder for training 
 			loss = autoencoder.train_on_batch(x_data, x_data)
 			print ('epoch: ', epoch, 'loss: ', loss)
@@ -157,6 +143,7 @@ def fit_or_batch_trainer(train_data, test_data, var_training, max_max_val, min_v
 		score = autoencoder.evaluate(test_data, test_data)
 		print('score is', score)
 
+#run the trainer model and determine the score as well
 fit_or_batch_trainer(train_data, test_data, TRAINING, max_val, min_val)
 
 
@@ -164,6 +151,7 @@ fit_or_batch_trainer(train_data, test_data, TRAINING, max_val, min_val)
 
 
 """
+# Deprecated if you wish to graph it
 #plot the loss and accuracy for the chart save 
 plt.plot(fit.history['mean_squared_error'], 'red')
 plt.plot(fit.history['loss'])

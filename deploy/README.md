@@ -16,7 +16,7 @@ STEPS to Run
 6. upload your picture and your done and click upload
 
 If everything is perfect you should see the following screenshot like I do on  your local url
-![Screenshot](/example_pics/Screenshot.png)
+![Screenshot](example_pics/Screenshot.png)
 
 NOTE: you can paste your own flower h5 file into the project and use that instead.
 Most important file is views.py as that is where all the magic is happening.

@@ -125,4 +125,30 @@ True
 ![Screenshot from 2021-05-15 21-08-57](https://user-images.githubusercontent.com/8258474/123721599-ab6f9080-d854-11eb-8ed4-ea13f9834300.png)
 ![Screenshot from 2021-05-15 21-09-10](https://user-images.githubusercontent.com/8258474/123721610-b0ccdb00-d854-11eb-8c53-3416483334e2.png)
 
-
+#random terminal info 
+```
+nami@erza:~$ nvidia-smi
+Sat May 15 21:16:43 2021       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 460.73.01    Driver Version: 460.73.01    CUDA Version: 11.2     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 105...  Off  | 00000000:01:00.0 Off |                  N/A |
+| N/A   43C    P0    N/A /  N/A |    324MiB /  4040MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|    0   N/A  N/A      1030      G   /usr/lib/xorg/Xorg                 45MiB |
+|    0   N/A  N/A      1628      G   /usr/lib/xorg/Xorg                147MiB |
+|    0   N/A  N/A      2290      G   /usr/bin/gnome-shell               83MiB |
+|    0   N/A  N/A      3374      G   ...AAAAAAAAA= --shared-files       36MiB |
++-----------------------------------------------------------------------------+
+```

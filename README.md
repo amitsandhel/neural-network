@@ -64,7 +64,7 @@ $ source ~/.bashrc
 
 From here onwards the cudad drivers should be setup and ready to go
 
-# Tensorflow SEtup
+# Tensorflow Setup
 12. then i created my pyenv using python 3.8 and a virtualenv 
 ```
 $ pyenv shell 3.8.9
@@ -119,4 +119,10 @@ True
 - https://www.tensorflow.org/install/source#gpu
 - https://towardsdatascience.com/installing-tensorflow-gpu-in-ubuntu-20-04-4ee3ca4cb75d
 - https://support.system76.com/articles/cuda/
-- 
+
+
+# Screenshots
+![Screenshot from 2021-05-15 21-08-57](https://user-images.githubusercontent.com/8258474/123721599-ab6f9080-d854-11eb-8ed4-ea13f9834300.png)
+![Screenshot from 2021-05-15 21-09-10](https://user-images.githubusercontent.com/8258474/123721610-b0ccdb00-d854-11eb-8c53-3416483334e2.png)
+
+

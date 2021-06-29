@@ -94,16 +94,7 @@ pyenv activate pytorch-nn
 pip install pytorch-lightning
 ```
 
-
-
-REFERENCES:
-- https://www.tensorflow.org/install/source#gpu
-- https://towardsdatascience.com/installing-tensorflow-gpu-in-ubuntu-20-04-4ee3ca4cb75d
-- https://support.system76.com/articles/cuda/
-- 
-
-
-- PYTroch 
+- PyTorch check to see if the GPU is detected 
 ```
 nami@erza:~/ExtraDrive/scinet/neural network$ pyenv activate pytorch-nn 
 pyenv-virtualenv: prompt changing will be removed from future release. configure `export PYENV_VIRTUALENV_DISABLE_PROMPT=1' to simulate the behavior.
@@ -123,3 +114,9 @@ True
 >>> 
 
 ```
+
+# REFERENCES:
+- https://www.tensorflow.org/install/source#gpu
+- https://towardsdatascience.com/installing-tensorflow-gpu-in-ubuntu-20-04-4ee3ca4cb75d
+- https://support.system76.com/articles/cuda/
+- 

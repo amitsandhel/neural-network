@@ -61,6 +61,10 @@ $ echo 'export LD_LIBRARY_PATH=/usr/lib/cuda/include:$LD_LIBRARY_PATH' >> ~/.bas
 
 $ source ~/.bashrc
 ```
+
+From here onwards the cudad drivers should be setup and ready to go
+
+# Tensorflow SEtup
 12. then i created my pyenv using python 3.8 and a virtualenv 
 ```
 $ pyenv shell 3.8.9
@@ -76,6 +80,19 @@ pip install matplotlib
 pip install scikit-learn
 ```
 
+# Pytorch Setup
+- in my gaming laptop I need to put them on separate virtual environments 
+15. now create a new virtualenv 
+```
+pyenv shell 3.9.4
+pyenv activate pytorch-nn
+```
+
+16. pip install whatever additional libraries you need
+17. the most important is pytorch lightning
+```
+pip install pytorch-lightning
+```
 
 
 

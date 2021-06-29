@@ -119,6 +119,7 @@ True
 - https://www.tensorflow.org/install/source#gpu
 - https://towardsdatascience.com/installing-tensorflow-gpu-in-ubuntu-20-04-4ee3ca4cb75d
 - https://support.system76.com/articles/cuda/
+- https://chrisalbon.com/deep_learning/pytorch/basics/check_if_pytorch_is_using_gpu/
 
 
 # Screenshots
